@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -- --boot uefi --disk /dev/sda --gui dwm --user developer --vboxutils false --development true
+set -- --boot uefi --disk /dev/sda --gui dwm --user developer --vboxutils false --development true --encrypted true
 source options/interpreter
 
 source common/distro

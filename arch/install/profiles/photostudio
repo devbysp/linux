@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -- --boot uefi --disk /dev/sda --gui gnome --user zoltan --vboxutils false --development false
+set -- --boot uefi --disk /dev/sda --gui gnome --user zoltan --vboxutils false --development false --encrypted false
 source options/interpreter
 
 source common/distro

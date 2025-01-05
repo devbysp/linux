@@ -12,6 +12,7 @@ FILE_TEMP=/tmp/tempfile
 FILE_DESKTOP_IMAGE=background.png
 FILE_PICOM_CONF=picom.conf
 FILE_PICOM_CONF_TEMPLATE=/etc/xdg/$FILE_PICOM_CONF
+FILE_VOLUME_PASSPHRASE=luks-passphrase.txt
 
 echo "--------------------------------------------------------------------------------"
 echo "Globals were defined successfully"

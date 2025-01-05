@@ -13,18 +13,34 @@ function create_partitions() {
 
 function format_partitions() {
   mkfs.fat -F 32 ${disk}1
-  mkfs.ext4 ${disk}2
+  if [[ $encrypted == "true" ]]; then
+    echo -n $volume_passwd > $FILE_VOLUME_PASSPHRASE
+
+    chmod 600 $FILE_VOLUME_PASSPHRASE
+    cryptsetup luksFormat --batch-mode --key-file=$FILE_VOLUME_PASSPHRASE ${disk}2
+    shred -u $FILE_VOLUME_PASSPHRASE
+
+    echo -en "$volume_passwd\n" | cryptsetup open ${disk}2 cryptroot
+    mkfs.ext4 /dev/mapper/cryptroot
+  else
+    mkfs.ext4 ${disk}2
+  fi
 
   echo "--------------------------------------------------------------------------------"
   echo "Partitions on '$disk' device have been formatted" 
   lsblk --fs $disk
+  echo "Volume password:" $volume_passwd
 
-  echo "Press Enter to  ontinue, or wait 5 seconds..."
+  echo "Press Enter to continue, or wait 5 seconds..."
   read -t 5 -n 1  # Wait for 5 seconds or a single keypress
 }
 
 function mount_partitions() {
-  mount ${disk}2 $FOLDER_MNT
+  if [[ $encrypted == "true" ]]; then
+    mount /dev/mapper/cryptroot $FOLDER_MNT
+  else
+    mount ${disk}2 $FOLDER_MNT
+  fi
   mount --mkdir ${disk}1 $FOLDER_MNT/boot/efi
 
   echo "--------------------------------------------------------------------------------"
@@ -46,5 +62,3 @@ function umount_partitions() {
   echo "Press Enter to  ontinue, or wait 5 seconds..."
   read -t 5 -n 1  # Wait for 5 seconds or a single keypress
 }
-
-

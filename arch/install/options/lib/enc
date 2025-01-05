@@ -1,0 +1,32 @@
+#!/bin/bash
+
+function choose_encrypt_option() {
+  echo "Please choose if volume should be encrypted or not:"
+
+  options=("Yes" "No" "Quit")
+
+  select choice in "${options[@]}"; do
+      case $choice in
+          "Yes")
+              encrypted="true"
+              break
+              ;;
+          "No")
+              encrypted="false"
+              break
+              ;;
+          "Quit")
+              echo "Exiting..."
+              break
+              ;;
+          *)
+              echo "Invalid option. Please try again."
+              ;;
+      esac
+  done
+}
+
+function read_volume_passwd() {
+  read -s -p "Enter password for volume encryption: " volume_passwd
+  volume_passwd=${volume_passwd:-changeit} # Use 'changeit' if no input is provided
+}

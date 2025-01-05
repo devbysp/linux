@@ -35,9 +35,15 @@ mkinitcpio -P
 pacman -S grub --noconfirm
 
 # Grub install
+if [[ $encrypted == "true" ]]; then
+  pacman -S cryptsetup --noconfirm
+  sed -i 's/GRUB_CMDLINE_LINUX=.*$/GRUB_CMDLINE_LINUX="cryptdevice=${disk}2:cryptroot root=\/dev\/mapper\/cryptroot"/g' /etc/default/grub
+fi
 pacman -S efibootmgr --noconfirm
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub
 grub-mkconfig -o /boot/grub/grub.cfg
+
+exit 1
 
 # Root password
 password="admin"

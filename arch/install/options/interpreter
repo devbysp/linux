@@ -11,6 +11,7 @@ function usage() {
   echo " [--gui         | -g] gnome | dwm     Graphical user interface. Defaultly installs none."
   echo " [--vboxutils   | -v] false | true    Vbox Utils to run virtual machin inside a virtual box instance"
   echo " [--development | -p] false | true    Install development tools"
+  echo " [--encrypted   | -e] false | true    Install development tools"
 
   echo "Press Enter to  ontinue, or wait 5 seconds..."
   read -t 5 -n 1  # Wait for 5 seconds or a single keypress
@@ -24,6 +25,7 @@ disk=""
 gui=""
 vboxutils=""
 development=""
+encrypted=""
 
 # Process options
 if [[ $# -gt 0 ]]; then
@@ -88,6 +90,17 @@ if [[ $# -gt 0 ]]; then
         development=$2
 
         if [[ $development != "true" ]] && [[ $development != "false" ]]; then
+          usage
+          exit 1
+        fi
+
+        shift 2
+        ;;
+
+      -e | --encrypted)
+        encrypted=$2
+
+        if [[ $encrypted != "true" ]] && [[ $encrypted != "false" ]]; then
           usage
           exit 1
         fi
@@ -187,6 +200,23 @@ while true; do
   fi
 done
 
+# Choose to encrypt volume or not
+source options/lib/enc
+while true; do
+  if [[ -z "$encrypted" ]]; then
+    choose_encrypt_option
+  fi
+
+  if [[ -n "$encrypted" ]]; then
+      if [[ $encrypted == "" ]]; then
+        read_volume_passwd
+      fi
+      break
+  else
+      echo "Input cannot be empty. Please try again."
+  fi
+done
+
 echo "--------------------------------------------------------------------------------"
 echo "Option interpreter"
 echo "boot:" $boot
@@ -195,6 +225,7 @@ echo "gui: " $gui
 echo "user:" $user
 echo "vboxutils:" $vboxutils
 echo "development:" $development
+echo "encrypted:" $encrypted
 
 echo "Press Enter to  ontinue, or wait 5 seconds..."
 read -t 5 -n 1  # Wait for 5 seconds or a single keypress
